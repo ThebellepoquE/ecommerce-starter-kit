@@ -190,6 +190,65 @@ paths:
                 $ref: "#/components/schemas/Order"
         "404":
           description: Orden no encontrada
+  /orders/{orderId}/payment-intent:
+    post:
+      summary: Crear PaymentIntent de Stripe para una orden pendiente
+      operationId: createOrderPaymentIntent
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idempotencyKey:
+                  type: string
+      responses:
+        "201":
+          description: PaymentIntent creado o reutilizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntentSession"
+        "404":
+          description: Orden no encontrada
+        "409":
+          description: Orden ya pagada o conflicto de idempotencia
+        "503":
+          description: Stripe no configurado
+  /orders/{orderId}/payment/sync:
+    post:
+      summary: Sincronizar estado de pago consultando Stripe
+      operationId: syncOrderPayment
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Orden actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Orden o pago no encontrado
+  /webhooks/stripe:
+    post:
+      summary: Webhook de Stripe (idempotente por event id)
+      operationId: stripeWebhook
+      responses:
+        "200":
+          description: Evento recibido
+        "400":
+          description: Firma invalida
 components:
   schemas:
     CartItem:
@@ -285,6 +344,16 @@ components:
         currency:
           type: string
           enum: [EUR, USD]
+    PaymentIntentSession:
+      type: object
+      required: [clientSecret, paymentIntentId, publishableKey]
+      properties:
+        clientSecret:
+          type: string
+        paymentIntentId:
+          type: string
+        publishableKey:
+          type: string
     Order:
       type: object
       required:
@@ -298,6 +367,7 @@ components:
           currency,
           createdAt,
           updatedAt,
+          payment,
         ]
       properties:
         id:
@@ -306,7 +376,24 @@ components:
           type: string
         status:
           type: string
-          enum: [pending]
+          enum: [pending, paid, shipped, cancelled]
+        payment:
+          type: object
+          nullable: true
+          required: [status, stripePaymentIntentId]
+          properties:
+            status:
+              type: string
+              enum:
+                [
+                  requires_payment_method,
+                  processing,
+                  succeeded,
+                  canceled,
+                  failed,
+                ]
+            stripePaymentIntentId:
+              type: string
         items:
           type: array
           items:

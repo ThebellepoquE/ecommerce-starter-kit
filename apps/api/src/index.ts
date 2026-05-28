@@ -1,16 +1,17 @@
 import Fastify from "fastify";
+import rawBody from "fastify-raw-body";
 import type {
   AddCartItemRequestDto,
   CartDto,
   CartItemDto,
   CreateOrderRequestDto,
-  OrderDto,
-  OrderItemDto,
   OrderStatus,
   ProductListItemDto,
 } from "@packages/types";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "./db.js";
+import { getOrderById, toOrderDto } from "./payments/payment-service.js";
+import { registerPaymentRoutes } from "./payments/register-payment-routes.js";
 
 const app = Fastify({ logger: true });
 const PORT = Number(process.env.API_PORT ?? 4000);
@@ -47,12 +48,6 @@ type CartWithItems = Prisma.CartGetPayload<{
   };
 }>;
 
-type OrderWithItems = Prisma.OrderGetPayload<{
-  include: {
-    items: true;
-  };
-}>;
-
 const toCartItemDto = (item: CartWithItems["items"][number]): CartItemDto => ({
   productId: item.productId,
   productSlug: item.product.slug,
@@ -78,35 +73,6 @@ const toCartDto = (cart: CartWithItems): CartDto => {
     currency,
     createdAt: cart.createdAt.toISOString(),
     updatedAt: cart.updatedAt.toISOString(),
-  };
-};
-
-const toOrderItemDto = (
-  item: OrderWithItems["items"][number],
-): OrderItemDto => ({
-  productId: item.productId,
-  productSlug: item.productSlug,
-  productTitle: item.productTitle,
-  quantity: item.quantity,
-  unitPriceCents: item.unitPriceCents,
-  lineTotalCents: item.lineTotalCents,
-  currency: mapProductCurrency(item.currency),
-});
-
-const toOrderDto = (order: OrderWithItems): OrderDto => {
-  const items = order.items.map(toOrderItemDto);
-  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
-
-  return {
-    id: order.id,
-    cartId: order.cartId,
-    status: "pending",
-    items,
-    totalItems,
-    totalCents: order.totalCents,
-    currency: mapProductCurrency(order.currency),
-    createdAt: order.createdAt.toISOString(),
-    updatedAt: order.updatedAt.toISOString(),
   };
 };
 
@@ -321,7 +287,7 @@ app.post<{ Body: CreateOrderRequestDto }>("/orders", async (request, reply) => {
     cart.items[0]?.product.currency ?? "EUR",
   );
 
-  const order = await prisma.$transaction(async (tx) => {
+  const createdOrderId = await prisma.$transaction(async (tx) => {
     const createdOrder = await tx.order.create({
       data: {
         cartId: cart.id,
@@ -339,9 +305,6 @@ app.post<{ Body: CreateOrderRequestDto }>("/orders", async (request, reply) => {
           })),
         },
       },
-      include: {
-        items: true,
-      },
     });
 
     await tx.cart.update({
@@ -349,8 +312,14 @@ app.post<{ Body: CreateOrderRequestDto }>("/orders", async (request, reply) => {
       data: { status: "ORDERED" },
     });
 
-    return createdOrder;
+    return createdOrder.id;
   });
+
+  const order = await getOrderById(createdOrderId);
+  if (!order) {
+    reply.code(500);
+    return { message: "Order was created but could not be loaded" };
+  }
 
   reply.code(201);
   return toOrderDto(order);
@@ -359,16 +328,7 @@ app.post<{ Body: CreateOrderRequestDto }>("/orders", async (request, reply) => {
 app.get<{ Params: { orderId: string } }>(
   "/orders/:orderId",
   async (request, reply) => {
-    const order = await prisma.order.findUnique({
-      where: { id: request.params.orderId },
-      include: {
-        items: {
-          orderBy: {
-            createdAt: "asc",
-          },
-        },
-      },
-    });
+    const order = await getOrderById(request.params.orderId);
 
     if (!order) {
       reply.code(404);
@@ -381,6 +341,14 @@ app.get<{ Params: { orderId: string } }>(
 
 const start = async (): Promise<void> => {
   try {
+    await app.register(rawBody, {
+      field: "rawBody",
+      global: false,
+      routes: ["/webhooks/stripe"],
+      encoding: false,
+      runFirst: true,
+    });
+    await registerPaymentRoutes(app);
     await app.listen({ port: PORT, host: HOST });
   } catch (error) {
     app.log.error(error);

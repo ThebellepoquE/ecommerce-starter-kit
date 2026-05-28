@@ -18,6 +18,15 @@ enum CartStatus {
 
 enum OrderStatus {
   PENDING
+  PAID
+}
+
+enum PaymentStatus {
+  REQUIRES_PAYMENT_METHOD
+  PROCESSING
+  SUCCEEDED
+  CANCELED
+  FAILED
 }
 
 model Product {
@@ -66,8 +75,29 @@ model Order {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 
-  cart  Cart        @relation(fields: [cartId], references: [id], onDelete: Restrict)
-  items OrderItem[]
+  cart    Cart        @relation(fields: [cartId], references: [id], onDelete: Restrict)
+  items   OrderItem[]
+  payment Payment?
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  orderId               String        @unique
+  stripePaymentIntentId String        @unique
+  status                PaymentStatus @default(REQUIRES_PAYMENT_METHOD)
+  amountCents           Int
+  currency              Currency
+  idempotencyKey        String?       @unique
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+}
+
+model StripeWebhookEvent {
+  id          String   @id
+  type        String
+  processedAt DateTime @default(now())
 }
 
 model OrderItem {
