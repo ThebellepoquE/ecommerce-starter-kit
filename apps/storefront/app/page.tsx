@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import type { AddCartItemRequestDto, CartDto, ProductListItemDto } from "@packages/types";
+import type {
+  AddCartItemRequestDto,
+  CartDto,
+  ProductListItemDto,
+} from "@packages/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 const CART_ID_STORAGE_KEY = "storefront_cart_id";
@@ -42,7 +46,9 @@ export default function HomePage() {
     const run = async (): Promise<void> => {
       setIsLoadingProducts(true);
       try {
-        const response = await fetch(`${API_URL}/products`, { cache: "no-store" });
+        const response = await fetch(`${API_URL}/products`, {
+          cache: "no-store",
+        });
         if (!response.ok) {
           throw new Error(`No se pudo cargar catalogo (${response.status})`);
         }
@@ -73,7 +79,8 @@ export default function HomePage() {
       setCartId(data.id);
       setStatusMessage(`Carrito creado: ${data.id}`);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Error creando carrito";
+      const message =
+        error instanceof Error ? error.message : "Error creando carrito";
       setStatusMessage(message);
     } finally {
       setIsCreatingCart(false);
@@ -105,10 +112,16 @@ export default function HomePage() {
   return (
     <main className="container">
       <h1>Starter Store</h1>
-      <p className="subtitle">Catalogo conectado a API con flujo carrito a orden.</p>
+      <p className="subtitle">
+        Catalogo conectado a API con flujo carrito a orden.
+      </p>
 
       <div className="actions">
-        <button type="button" onClick={() => void createCart()} disabled={isCreatingCart}>
+        <button
+          type="button"
+          onClick={() => void createCart()}
+          disabled={isCreatingCart}
+        >
           {cartId ? "Carrito activo" : "Crear carrito"}
         </button>
         <Link href="/cart">Ir al carrito</Link>
@@ -123,7 +136,10 @@ export default function HomePage() {
           <article key={product.id} className="card">
             <h2>{product.title}</h2>
             <p>{formatCurrency(product.priceCents, product.currency)}</p>
-            <button type="button" onClick={() => void addProductToCart(product.id)}>
+            <button
+              type="button"
+              onClick={() => void addProductToCart(product.id)}
+            >
               Agregar al carrito
             </button>
           </article>

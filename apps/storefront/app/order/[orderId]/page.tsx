@@ -23,7 +23,9 @@ export default function OrderPage() {
   useEffect(() => {
     const run = async (): Promise<void> => {
       setIsLoading(true);
-      const response = await fetch(`${API_URL}/orders/${orderId}`, { cache: "no-store" });
+      const response = await fetch(`${API_URL}/orders/${orderId}`, {
+        cache: "no-store",
+      });
       if (!response.ok) {
         setMessage("No se pudo cargar la orden");
         setIsLoading(false);

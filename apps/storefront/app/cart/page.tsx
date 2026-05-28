@@ -48,7 +48,9 @@ export default function CartPage() {
 
     const run = async (): Promise<void> => {
       setIsLoading(true);
-      const response = await fetch(`${API_URL}/cart/${cartId}`, { cache: "no-store" });
+      const response = await fetch(`${API_URL}/cart/${cartId}`, {
+        cache: "no-store",
+      });
       if (!response.ok) {
         setMessage("No se pudo cargar el carrito");
         setIsLoading(false);
@@ -67,9 +69,12 @@ export default function CartPage() {
       return;
     }
 
-    const response = await fetch(`${API_URL}/cart/${cartId}/items/${productId}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `${API_URL}/cart/${cartId}/items/${productId}`,
+      {
+        method: "DELETE",
+      },
+    );
     if (!response.ok) {
       const reason = await parseError(response);
       setMessage(`No se pudo quitar item: ${reason}`);
@@ -132,7 +137,10 @@ export default function CartPage() {
                 <h2>{item.productTitle}</h2>
                 <p>Cantidad: {item.quantity}</p>
                 <p>{formatCurrency(item.lineTotalCents, item.currency)}</p>
-                <button type="button" onClick={() => void removeItem(item.productId)}>
+                <button
+                  type="button"
+                  onClick={() => void removeItem(item.productId)}
+                >
                   Quitar
                 </button>
               </article>
