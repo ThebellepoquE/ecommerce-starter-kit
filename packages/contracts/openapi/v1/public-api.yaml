@@ -224,7 +224,16 @@ components:
     Cart:
       type: object
       required:
-        [id, status, items, totalItems, totalCents, currency, createdAt, updatedAt]
+        [
+          id,
+          status,
+          items,
+          totalItems,
+          totalCents,
+          currency,
+          createdAt,
+          updatedAt,
+        ]
       properties:
         id:
           type: string
