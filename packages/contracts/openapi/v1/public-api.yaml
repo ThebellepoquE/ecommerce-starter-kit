@@ -1,0 +1,70 @@
+openapi: 3.1.0
+info:
+  title: Ecommerce Starter Kit API
+  version: 1.0.0
+  description: Contrato publico minimo versionado para endpoints base.
+servers:
+  - url: http://localhost:4000
+paths:
+  /health:
+    get:
+      summary: Health check del servicio
+      operationId: getHealth
+      responses:
+        "200":
+          description: API saludable
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+  /version:
+    get:
+      summary: Version del servicio API
+      operationId: getVersion
+      responses:
+        "200":
+          description: Metadata del servicio
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [name, version, orderStatusExample]
+                properties:
+                  name:
+                    type: string
+                  version:
+                    type: string
+                  orderStatusExample:
+                    type: string
+                    enum: [pending, paid, shipped, cancelled]
+  /products:
+    get:
+      summary: Lista de productos activos
+      operationId: listProducts
+      responses:
+        "200":
+          description: Productos activos visibles en catalogo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required: [id, slug, title, priceCents, currency]
+                  properties:
+                    id:
+                      type: string
+                    slug:
+                      type: string
+                    title:
+                      type: string
+                    priceCents:
+                      type: number
+                    currency:
+                      type: string
+                      enum: [EUR, USD]

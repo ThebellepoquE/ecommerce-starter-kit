@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
-    "@packages/contracts": "workspace:*",
     "@packages/types": "workspace:*",
     "@prisma/adapter-neon": "^7.8.0",
     "@prisma/client": "^7.8.0",

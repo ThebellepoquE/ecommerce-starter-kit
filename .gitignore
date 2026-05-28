@@ -1,6 +1,45 @@
+# Dependencias
 node_modules/
+.pnpm-store/
+
+# Entornos y secretos (¡CRÍTICO!)
 .env
-.DS_Store
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Builds y logs
 dist/
 build/
+.next/
+out/
+*.tsbuildinfo
 *.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Bases de datos locales
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuraciones de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Tests y cobertura
+coverage/
+.nyc_output/
+
+# Otros archivos temporales
+*.tmp
+*.temp
+.cache/
