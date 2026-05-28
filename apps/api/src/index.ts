@@ -1,6 +1,5 @@
 import Fastify from "fastify";
 import type { OrderStatus, ProductListItemDto } from "@packages/types";
-import type { DomainEvent } from "@packages/contracts";
 import { prisma } from "./db.js";
 
 const app = Fastify({ logger: true });
@@ -72,39 +71,6 @@ app.get(
     return dto;
   },
 );
-
-const domainEventPlaceholders: DomainEvent[] = [
-  {
-    type: "ProductUpdated",
-    payload: {
-      productId: "placeholder-product-id",
-      updatedFields: ["title"],
-      occurredAt: new Date(0).toISOString(),
-    },
-  },
-  {
-    type: "OrderPlaced",
-    payload: {
-      orderId: "placeholder-order-id",
-      customerId: "placeholder-customer-id",
-      totalCents: 0,
-      currency: "EUR",
-      occurredAt: new Date(0).toISOString(),
-    },
-  },
-  {
-    type: "PaymentCaptured",
-    payload: {
-      paymentId: "placeholder-payment-id",
-      orderId: "placeholder-order-id",
-      amountCents: 0,
-      currency: "EUR",
-      occurredAt: new Date(0).toISOString(),
-    },
-  },
-];
-
-void domainEventPlaceholders;
 
 const start = async (): Promise<void> => {
   try {
