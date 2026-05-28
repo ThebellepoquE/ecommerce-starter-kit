@@ -68,3 +68,14 @@ Detalle de responsabilidades y flujos: [ARCHITECTURE.md](ARCHITECTURE.md).
 ## CI
 
 En cada PR/push a `main`: Format, Lint, Typecheck, Test. Ramas Neon por PR: `.github/workflows/neon_workflow.yml`.
+
+## Si ves *Internal Server Error* en :3000
+
+1. Detén procesos viejos en el puerto 3000: `fuser -k 3000/tcp` (o cierra el terminal donde corría `next dev`).
+2. Limpia caché y arranca de nuevo desde la raíz del monorepo:
+   ```bash
+   rm -rf apps/storefront/.next
+   pnpm dev
+   ```
+3. Levanta siempre **storefront y API** juntos (`pnpm dev` en la raíz). Sin API en :4000 la home carga, pero carrito/orden fallan al fetch.
+4. Next.js debe usar el root del monorepo (`apps/storefront/next.config.ts` → `outputFileTracingRoot`). Si hay un `package-lock.json` en `~/Escritorio`, no debería afectar tras esa config.
