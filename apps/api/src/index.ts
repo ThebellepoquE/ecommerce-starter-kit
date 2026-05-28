@@ -81,7 +81,9 @@ const toCartDto = (cart: CartWithItems): CartDto => {
   };
 };
 
-const toOrderItemDto = (item: OrderWithItems["items"][number]): OrderItemDto => ({
+const toOrderItemDto = (
+  item: OrderWithItems["items"][number],
+): OrderItemDto => ({
   productId: item.productId,
   productSlug: item.productSlug,
   productTitle: item.productTitle,
@@ -187,16 +189,19 @@ app.post("/cart", async (_, reply) => {
   return toCartDto(cart);
 });
 
-app.get<{ Params: { cartId: string } }>("/cart/:cartId", async (request, reply) => {
-  const cart = await getCartById(request.params.cartId);
+app.get<{ Params: { cartId: string } }>(
+  "/cart/:cartId",
+  async (request, reply) => {
+    const cart = await getCartById(request.params.cartId);
 
-  if (!cart) {
-    reply.code(404);
-    return { message: "Cart not found" };
-  }
+    if (!cart) {
+      reply.code(404);
+      return { message: "Cart not found" };
+    }
 
-  return toCartDto(cart);
-});
+    return toCartDto(cart);
+  },
+);
 
 app.post<{ Params: { cartId: string }; Body: AddCartItemRequestDto }>(
   "/cart/:cartId/items",
@@ -312,7 +317,9 @@ app.post<{ Body: CreateOrderRequestDto }>("/orders", async (request, reply) => {
     (acc, item) => acc + item.quantity * item.product.priceCents,
     0,
   );
-  const orderCurrency = mapProductCurrency(cart.items[0]?.product.currency ?? "EUR");
+  const orderCurrency = mapProductCurrency(
+    cart.items[0]?.product.currency ?? "EUR",
+  );
 
   const order = await prisma.$transaction(async (tx) => {
     const createdOrder = await tx.order.create({
@@ -349,25 +356,28 @@ app.post<{ Body: CreateOrderRequestDto }>("/orders", async (request, reply) => {
   return toOrderDto(order);
 });
 
-app.get<{ Params: { orderId: string } }>("/orders/:orderId", async (request, reply) => {
-  const order = await prisma.order.findUnique({
-    where: { id: request.params.orderId },
-    include: {
-      items: {
-        orderBy: {
-          createdAt: "asc",
+app.get<{ Params: { orderId: string } }>(
+  "/orders/:orderId",
+  async (request, reply) => {
+    const order = await prisma.order.findUnique({
+      where: { id: request.params.orderId },
+      include: {
+        items: {
+          orderBy: {
+            createdAt: "asc",
+          },
         },
       },
-    },
-  });
+    });
 
-  if (!order) {
-    reply.code(404);
-    return { message: "Order not found" };
-  }
+    if (!order) {
+      reply.code(404);
+      return { message: "Order not found" };
+    }
 
-  return toOrderDto(order);
-});
+    return toOrderDto(order);
+  },
+);
 
 const start = async (): Promise<void> => {
   try {
