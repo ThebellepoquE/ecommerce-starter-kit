@@ -42,3 +42,28 @@ body {
   padding: 1rem;
   background: #121a33;
 }
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+button {
+  border: 1px solid #5f74ff;
+  border-radius: 8px;
+  background: #3041b8;
+  color: #f4f6ff;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+a {
+  color: #9eb0ff;
+}
