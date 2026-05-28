@@ -33,6 +33,7 @@ jobs:
         with:
           node-version: 22
       - run: pnpm install --no-frozen-lockfile
+      - run: pnpm --filter @apps/api prisma:generate
       - run: pnpm lint
 
   typecheck:
@@ -47,6 +48,7 @@ jobs:
         with:
           node-version: 22
       - run: pnpm install --no-frozen-lockfile
+      - run: pnpm --filter @apps/api prisma:generate
       - run: pnpm typecheck
 
   test:
