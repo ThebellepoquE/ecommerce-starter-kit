@@ -15,12 +15,17 @@
     "seed": "prisma db seed"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@packages/types": "workspace:*",
+    "@prisma/adapter-neon": "^7.8.0",
     "@prisma/client": "^7.8.0",
-    "fastify": "^5.6.1"
+    "dotenv": "^17.4.2",
+    "fastify": "^5.6.1",
+    "ws": "^8.21.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.31",
+    "@types/ws": "^8.18.1",
     "prisma": "^7.8.0",
     "tsx": "^4.20.6"
   },
