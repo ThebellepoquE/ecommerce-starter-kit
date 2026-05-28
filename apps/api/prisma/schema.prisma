@@ -6,13 +6,84 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Currency {
+  EUR
+  USD
+}
+
+enum CartStatus {
+  ACTIVE
+  ORDERED
+}
+
+enum OrderStatus {
+  PENDING
+}
+
 model Product {
   id         String   @id @default(cuid())
   slug       String   @unique
   title      String
   priceCents Int
-  currency   String
+  currency   Currency
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  status    CartStatus @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  items   CartItem[]
+  orders  Order[]
+}
+
+model CartItem {
+  cartId     String
+  productId  String
+  quantity   Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@id([cartId, productId])
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  cartId     String
+  status     OrderStatus @default(PENDING)
+  totalCents Int
+  currency   Currency
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  cart  Cart        @relation(fields: [cartId], references: [id], onDelete: Restrict)
+  items OrderItem[]
+}
+
+model OrderItem {
+  orderId         String
+  productId       String
+  productSlug     String
+  productTitle    String
+  quantity        Int
+  unitPriceCents  Int
+  lineTotalCents  Int
+  currency        Currency
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@id([orderId, productId])
 }
