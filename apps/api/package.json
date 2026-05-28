@@ -1,0 +1,30 @@
+{
+  "name": "@apps/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "pnpm run typecheck",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "seed": "prisma db seed"
+  },
+  "dependencies": {
+    "@packages/types": "workspace:*",
+    "@prisma/client": "^7.8.0",
+    "fastify": "^5.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.31",
+    "prisma": "^7.8.0",
+    "tsx": "^4.20.6"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}

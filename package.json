@@ -1,0 +1,23 @@
+{
+  "name": "ecommerce-starter-kit",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.3.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel --filter @apps/storefront --filter @apps/api dev",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "format": "pnpm -r --if-present format",
+    "test": "pnpm -r --if-present test"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.5.0",
+    "vitest": "^3.0.0",
+    "supertest": "^7.0.0",
+    "@types/supertest": "^6.0.0"
+  }
+}
