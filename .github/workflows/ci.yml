@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: 22
       - run: pnpm install --no-frozen-lockfile
-      - run: pnpm --filter @apps/api prisma:generate
+      - run: DATABASE_URL=postgresql://ci:ci@localhost:5432/ci pnpm --filter @apps/api prisma:generate
       - run: pnpm lint
 
   typecheck:
@@ -48,7 +48,7 @@ jobs:
         with:
           node-version: 22
       - run: pnpm install --no-frozen-lockfile
-      - run: pnpm --filter @apps/api prisma:generate
+      - run: DATABASE_URL=postgresql://ci:ci@localhost:5432/ci pnpm --filter @apps/api prisma:generate
       - run: pnpm typecheck
 
   test:
