@@ -1,36 +1,70 @@
 # Ecommerce Starter Kit
 
-MVP minimo en monorepo con:
-- `apps/storefront`: Next.js (TypeScript + App Router)
-- `apps/api`: Fastify en TypeScript
-- `packages/types`: tipos compartidos
-- `packages/contracts`: contratos OpenAPI versionados + eventos de dominio
+MVP mínimo en monorepo con arquitectura modular y contratos versionados.
 
-## Arranque rapido
+## Documentación
 
-1. `pnpm install`
-2. Copiar `.env.example` a `.env` y completar `DATABASE_URL` de Neon.
-3. Crear migracion inicial: `pnpm --filter @apps/api prisma:migrate --name init_catalog`
+| Recurso | Descripción |
+|---------|-------------|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Vista del sistema, dominios, flujos, datos, CI y decisiones |
+| [docs/roadmap.md](docs/roadmap.md) | Fases, hitos y criterios de escalado |
+| [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) | **Regla:** actualizar docs en el mismo PR que el código |
+
+## Stack
+
+- `apps/storefront` — Next.js (TypeScript, App Router, SCSS)
+- `apps/api` — Fastify + Prisma + Neon Postgres (EU)
+- `packages/types` — DTOs compartidos
+- `packages/contracts` — OpenAPI v1 + eventos de dominio
+
+## Arranque rápido
+
+1. `pnpm install` (Node **22**, pnpm **11.3.0**)
+2. Copiar `.env.example` a `.env` (raíz y/o `apps/api/.env`) y completar variables.
+3. Aplicar migraciones: `pnpm --filter @apps/api prisma:migrate`
 4. Seed de productos demo: `pnpm --filter @apps/api seed`
 5. Levantar storefront + API: `pnpm dev`
+6. (Opcional, pagos) Stripe CLI: `stripe listen --forward-to localhost:4000/webhooks/stripe`
 
-## Endpoints API
+Variables útiles:
 
-- `GET http://localhost:4000/health` -> `{ "status": "ok" }`
-- `GET http://localhost:4000/version` -> metadata minima del servicio
-- `GET http://localhost:4000/products` -> lista de productos activos
+- API: `DATABASE_URL`, `API_PORT`, `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`
+- Storefront: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (opcional; la API devuelve la clave en `payment-intent`)
 
-## Dominios y contratos
-
-- Bounded contexts minimos en API: `catalog`, `identity`, `orders`, `payments`, `checkout`, `cart` en `apps/api/src/bounded-contexts`.
-- Contrato API versionado (v1): `packages/contracts/openapi/v1/public-api.yaml`.
-- Eventos de dominio compartidos: `ProductUpdated`, `OrderPlaced`, `PaymentCaptured` en `packages/contracts/src/events.ts`.
+Tarjeta de prueba Stripe: `4242 4242 4242 4242`, cualquier fecha/CVC futuros.
 
 ## Apps
 
-- Storefront: [http://localhost:3000](http://localhost:3000)
+- Storefront: [http://localhost:3000](http://localhost:3000) — `/`, `/cart`, `/order/[orderId]`
 - API: [http://localhost:4000](http://localhost:4000)
 
-## Roadmap
+## Endpoints API (v1)
 
-- Roadmap de fases y ejecucion inmediata: [`docs/roadmap.md`](docs/roadmap.md)
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| `GET` | `/health` | Health check `{ "status": "ok" }` |
+| `GET` | `/version` | Metadata del servicio |
+| `GET` | `/products` | Productos activos del catálogo |
+| `POST` | `/cart` | Crear carrito vacío |
+| `GET` | `/cart/:cartId` | Obtener carrito |
+| `POST` | `/cart/:cartId/items` | Añadir o incrementar ítem |
+| `DELETE` | `/cart/:cartId/items/:productId` | Quitar ítem |
+| `POST` | `/orders` | Crear pedido desde carrito |
+| `GET` | `/orders/:orderId` | Detalle de pedido |
+| `POST` | `/orders/:orderId/payment-intent` | Crear PaymentIntent (Stripe) |
+| `POST` | `/orders/:orderId/payment/sync` | Sincronizar estado de pago con Stripe |
+| `POST` | `/webhooks/stripe` | Webhook Stripe (idempotente) |
+
+Flujo de pago: catálogo → carrito → orden → pago en `/order/:orderId`. Detalle en [ARCHITECTURE.md — Pagos](ARCHITECTURE.md#pagos-stripe).
+
+Contrato completo: `packages/contracts/openapi/v1/public-api.yaml`.
+
+## Dominios
+
+Bounded contexts en `apps/api/src/bounded-contexts/`: `catalog`, `cart`, `orders`, `checkout`, `payments`, `identity`.
+
+Detalle de responsabilidades y flujos: [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## CI
+
+En cada PR/push a `main`: Format, Lint, Typecheck, Test. Ramas Neon por PR: `.github/workflows/neon_workflow.yml`.

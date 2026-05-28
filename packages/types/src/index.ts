@@ -1,6 +1,12 @@
 export type OrderStatus = "pending" | "paid" | "shipped" | "cancelled";
 export type CartStatus = "active" | "ordered";
 export type CurrencyCode = "EUR" | "USD";
+export type PaymentStatusDto =
+  | "requires_payment_method"
+  | "processing"
+  | "succeeded"
+  | "canceled"
+  | "failed";
 
 export interface Product {
   id: string;
@@ -58,16 +64,32 @@ export interface OrderItemDto {
   currency: CurrencyCode;
 }
 
+export interface OrderPaymentDto {
+  status: PaymentStatusDto;
+  stripePaymentIntentId: string;
+}
+
 export interface OrderDto {
   id: string;
   cartId: string;
-  status: "pending";
+  status: OrderStatus;
   items: OrderItemDto[];
   totalItems: number;
   totalCents: number;
   currency: CurrencyCode;
   createdAt: string;
   updatedAt: string;
+  payment: OrderPaymentDto | null;
+}
+
+export interface CreatePaymentIntentRequestDto {
+  idempotencyKey?: string;
+}
+
+export interface CreatePaymentIntentResponseDto {
+  clientSecret: string;
+  paymentIntentId: string;
+  publishableKey: string;
 }
 
 export interface User {

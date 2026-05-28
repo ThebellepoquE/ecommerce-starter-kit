@@ -99,9 +99,10 @@ Guardrails de extraccion:
 
 ## Checklist priorizado (2-4 semanas)
 
-1. [ ] Publicar este roadmap y enlazarlo desde `README.md`.
-2. [ ] Definir baseline de performance (latencia/throughput/error rate) para rutas criticas.
-3. [ ] Añadir gate en CI para validar drift de OpenAPI vs implementacion.
-4. [ ] Establecer ownership explicito por bounded context en `apps/api/src/bounded-contexts`.
-5. [ ] Crear dashboard minimo con SLO de API (latencia p95, 5xx, disponibilidad).
-6. [ ] Ejecutar una prueba de carga corta y documentar umbrales de extraccion a Fastify.
+1. [x] Publicar este roadmap y enlazarlo desde `README.md`.
+2. [x] Publicar `ARCHITECTURE.md` y guia de documentacion viva en `docs/DOCUMENTATION.md`.
+3. [ ] Definir baseline de performance (latencia/throughput/error rate) para rutas criticas.
+4. [ ] Añadir gate en CI para validar drift de OpenAPI vs implementacion.
+5. [ ] Establecer ownership explicito por bounded context en `apps/api/src/bounded-contexts`.
+6. [ ] Crear dashboard minimo con SLO de API (latencia p95, 5xx, disponibilidad).
+7. [ ] Ejecutar una prueba de carga corta y documentar umbrales de extraccion a Fastify.

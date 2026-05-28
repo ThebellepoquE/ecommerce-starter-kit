@@ -30,6 +30,19 @@ const parseError = async (response: Response): Promise<string> => {
   return "Error inesperado";
 };
 
+const getMessageTone = (
+  message: string,
+): "status-message--success" | "status-message--error" | "" => {
+  const normalized = message.toLowerCase();
+  if (normalized.includes("error") || normalized.includes("no se pudo")) {
+    return "status-message--error";
+  }
+  if (normalized.includes("creado") || normalized.includes("agregado")) {
+    return "status-message--success";
+  }
+  return "";
+};
+
 export default function HomePage() {
   const [products, setProducts] = useState<ProductListItemDto[]>([]);
   const [cartId, setCartId] = useState<string | null>(null);
@@ -111,12 +124,14 @@ export default function HomePage() {
 
   return (
     <main className="container">
-      <h1>Starter Store</h1>
-      <p className="subtitle">
-        Catalogo conectado a API con flujo carrito a orden.
-      </p>
+      <header className="page-header">
+        <h1>Starter Store</h1>
+        <p className="subtitle">
+          Catalogo conectado a API con flujo carrito a orden.
+        </p>
+      </header>
 
-      <div className="actions">
+      <div className="toolbar">
         <button
           type="button"
           onClick={() => void createCart()}
@@ -126,25 +141,36 @@ export default function HomePage() {
         </button>
         <Link href="/cart">Ir al carrito</Link>
       </div>
-      {cartId ? <p>cartId: {cartId}</p> : null}
-      {statusMessage ? <p>{statusMessage}</p> : null}
+      {cartId ? <p className="meta-text">cartId: {cartId}</p> : null}
+      {statusMessage ? (
+        <p className={`status-message ${getMessageTone(statusMessage)}`}>
+          {statusMessage}
+        </p>
+      ) : null}
 
-      {isLoadingProducts ? <p>Cargando productos...</p> : null}
+      {isLoadingProducts ? (
+        <p className="meta-text">Cargando productos...</p>
+      ) : null}
 
-      <section className="grid">
-        {products.map((product) => (
-          <article key={product.id} className="card">
-            <h2>{product.title}</h2>
-            <p>{formatCurrency(product.priceCents, product.currency)}</p>
-            <button
-              type="button"
-              onClick={() => void addProductToCart(product.id)}
-            >
-              Agregar al carrito
-            </button>
-          </article>
-        ))}
-      </section>
+      <h2 className="section-title">Productos</h2>
+      {products.length === 0 && !isLoadingProducts ? (
+        <p className="empty-state">No hay productos disponibles ahora mismo.</p>
+      ) : (
+        <section className="grid">
+          {products.map((product) => (
+            <article key={product.id} className="card">
+              <h3>{product.title}</h3>
+              <p>{formatCurrency(product.priceCents, product.currency)}</p>
+              <button
+                type="button"
+                onClick={() => void addProductToCart(product.id)}
+              >
+                Agregar al carrito
+              </button>
+            </article>
+          ))}
+        </section>
+      )}
     </main>
   );
 }

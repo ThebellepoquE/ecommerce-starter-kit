@@ -27,6 +27,19 @@ const parseError = async (response: Response): Promise<string> => {
   return "Error inesperado";
 };
 
+const getMessageTone = (
+  message: string,
+): "status-message--success" | "status-message--error" | "" => {
+  const normalized = message.toLowerCase();
+  if (normalized.includes("error") || normalized.includes("no se pudo")) {
+    return "status-message--error";
+  }
+  if (normalized.includes("creado") || normalized.includes("agregado")) {
+    return "status-message--success";
+  }
+  return "";
+};
+
 export default function CartPage() {
   const router = useRouter();
   const [cartId, setCartId] = useState<string | null>(null);
@@ -113,8 +126,10 @@ export default function CartPage() {
   if (!cartId) {
     return (
       <main className="container">
-        <h1>Carrito</h1>
-        <p>No hay carrito activo en este navegador.</p>
+        <header className="page-header">
+          <h1>Carrito</h1>
+          <p className="subtitle">No hay carrito activo en este navegador.</p>
+        </header>
         <Link href="/">Volver al catalogo</Link>
       </main>
     );
@@ -122,23 +137,29 @@ export default function CartPage() {
 
   return (
     <main className="container">
-      <h1>Carrito</h1>
-      <p className="subtitle">cartId: {cartId}</p>
+      <header className="page-header">
+        <h1>Carrito</h1>
+        <p className="subtitle">cartId: {cartId}</p>
+      </header>
       <Link href="/">Seguir comprando</Link>
 
-      {isLoading ? <p>Cargando carrito...</p> : null}
-      {message ? <p>{message}</p> : null}
+      {isLoading ? <p className="meta-text">Cargando carrito...</p> : null}
+      {message ? (
+        <p className={`status-message ${getMessageTone(message)}`}>{message}</p>
+      ) : null}
 
       {cart ? (
         <>
+          <h2 className="section-title">Items</h2>
           <section className="grid">
             {cart.items.map((item) => (
               <article className="card" key={item.productId}>
-                <h2>{item.productTitle}</h2>
-                <p>Cantidad: {item.quantity}</p>
+                <h3>{item.productTitle}</h3>
+                <p className="meta-text">Cantidad: {item.quantity}</p>
                 <p>{formatCurrency(item.lineTotalCents, item.currency)}</p>
                 <button
                   type="button"
+                  className="danger-button"
                   onClick={() => void removeItem(item.productId)}
                 >
                   Quitar
@@ -146,7 +167,12 @@ export default function CartPage() {
               </article>
             ))}
           </section>
-          <p>Total: {formatCurrency(cart.totalCents, cart.currency)}</p>
+          {cart.items.length === 0 ? (
+            <p className="empty-state">Tu carrito esta vacio.</p>
+          ) : null}
+          <p className="total-row">
+            Total: {formatCurrency(cart.totalCents, cart.currency)}
+          </p>
           <button
             type="button"
             disabled={cart.items.length === 0 || isSubmittingOrder}
