@@ -8,7 +8,10 @@ MVP mínimo en monorepo con arquitectura modular y contratos versionados.
 |---------|-------------|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Vista del sistema, dominios, flujos, datos, CI y decisiones |
 | [docs/roadmap.md](docs/roadmap.md) | Fases, hitos y criterios de escalado |
-| [docs/performance-baseline.md](docs/performance-baseline.md) | Baseline de latencia/throughput (`pnpm perf:baseline`) |
+| [docs/performance-baseline.md](docs/performance-baseline.md) | Baseline de latencia (`pnpm perf:baseline`) |
+| [docs/slo-dashboard.md](docs/slo-dashboard.md) | SLO en memoria (`pnpm slo:status`) |
+| [docs/load-test.md](docs/load-test.md) | Prueba de carga corta (`pnpm load:test`) |
+| [docs/stripe-test-setup.md](docs/stripe-test-setup.md) | **Stripe modo test** — cuenta, claves, CLI, webhook, tarjetas |
 | [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) | **Regla:** actualizar docs en el mismo PR que el código |
 
 ## Stack
@@ -25,7 +28,7 @@ MVP mínimo en monorepo con arquitectura modular y contratos versionados.
 3. Aplicar migraciones: `pnpm --filter @apps/api prisma:migrate`
 4. Seed de productos demo: `pnpm --filter @apps/api seed`
 5. Levantar storefront + API: `pnpm dev`
-6. (Opcional, pagos) Stripe CLI: `stripe listen --forward-to localhost:4000/webhooks/stripe`
+6. **(Opcional, pagos)** Guía completa: [docs/stripe-test-setup.md](docs/stripe-test-setup.md) — resumen: `stripe listen --forward-to localhost:4000/webhooks/stripe` y copiar `whsec_...` a `STRIPE_WEBHOOK_SECRET`.
 
 Variables útiles:
 
@@ -57,7 +60,7 @@ Tarjeta de prueba Stripe: `4242 4242 4242 4242`, cualquier fecha/CVC futuros.
 | `POST` | `/orders/:orderId/payment/sync` | Sincronizar estado de pago con Stripe |
 | `POST` | `/webhooks/stripe` | Webhook Stripe (idempotente) |
 
-Flujo de pago: catálogo → carrito → orden → pago en `/order/:orderId`. Detalle en [ARCHITECTURE.md — Pagos](ARCHITECTURE.md#pagos-stripe).
+Flujo de pago: catálogo → carrito → orden → pago en `/order/:orderId`. Detalle en [ARCHITECTURE.md — Pagos](ARCHITECTURE.md#pagos-stripe). **Setup local Stripe (test):** [docs/stripe-test-setup.md](docs/stripe-test-setup.md).
 
 Contrato completo: `packages/contracts/openapi/v1/public-api.yaml`.
 

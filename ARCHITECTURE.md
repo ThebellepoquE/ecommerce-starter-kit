@@ -149,13 +149,13 @@ Módulo en `apps/api/src/payments/`:
 
 **Variables:** `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` (API); `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` opcional en storefront (la clave publica se devuelve también en `payment-intent`).
 
-**Local con webhooks:**
+**Local con webhooks:** guía paso a paso en [docs/stripe-test-setup.md](docs/stripe-test-setup.md). Resumen:
 
 ```bash
 stripe listen --forward-to localhost:4000/webhooks/stripe
 ```
 
-Copiar el `whsec_...` emitido a `STRIPE_WEBHOOK_SECRET` en `apps/api/.env`.
+Copiar el `whsec_...` emitido a `STRIPE_WEBHOOK_SECRET` en `apps/api/.env` y reiniciar la API.
 
 ## Capas y dependencias
 
