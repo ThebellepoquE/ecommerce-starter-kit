@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import type { OrderStatus } from "@packages/types";
+import { buildSloDashboard } from "../observability/http-metrics.js";
 
 export const registerSystemRoutes = async (
   app: FastifyInstance,
@@ -16,4 +17,6 @@ export const registerSystemRoutes = async (
       orderStatusExample,
     };
   });
+
+  app.get("/metrics/slo", async () => buildSloDashboard());
 };

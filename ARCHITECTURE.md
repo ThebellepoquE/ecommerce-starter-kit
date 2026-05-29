@@ -179,6 +179,7 @@ DTOs compartidos entre API y storefront (`CartDto`, `OrderDto`, `ProductListItem
 - **Persistencia:** Prisma 6 + adapter `@prisma/adapter-neon` y driver serverless Neon (`apps/api/src/db.ts`).
 - **Migraciones:** `apps/api/prisma/`; configuración en `prisma.config.ts`.
 - **Puertos:** `API_PORT` (default `4000`), `DATABASE_URL` obligatorio.
+- **Observabilidad (MVP):** hooks HTTP en `apps/api/src/observability/`; dashboard SLO en `GET /metrics/slo` ([docs/slo-dashboard.md](docs/slo-dashboard.md)).
 
 ### Storefront (`apps/storefront`)
 
@@ -230,7 +231,7 @@ Orden recomendado (detalle en [docs/roadmap.md](docs/roadmap.md)):
 2. **Worker:** cola Redis/BullMQ para procesar webhooks y side effects fuera del request HTTP.
 3. **Observabilidad de pagos:** métricas de conversión, fallos de PI y latencia webhook.
 4. ~~**Modularización API:** routers por bounded context sin cambiar contratos públicos.~~ Hecho para catalog/cart/orders/payments/system; ampliar tests por módulo si hace falta.
-5. **Observabilidad:** métricas HTTP, tracing y dashboards de SLO.
+5. ~~**Observabilidad:** métricas HTTP y dashboard SLO mínimo.~~ Hecho: `GET /metrics/slo`, hooks en `observability/`, `pnpm slo:status` — ver [docs/slo-dashboard.md](docs/slo-dashboard.md). Tracing/Grafana pendiente.
 6. ~~**Gate OpenAPI:** fallar CI si implementación y `public-api.yaml` divergen.~~ Hecho: manifiesto `api-route-manifest.ts` + `pnpm contracts:check` en CI.
 
 ## Criterios de extracción a servicio dedicado
