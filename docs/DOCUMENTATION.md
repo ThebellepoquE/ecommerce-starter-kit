@@ -9,6 +9,7 @@ La documentación es parte del entregable. **Cada PR que modifique comportamient
 | [README.md](../README.md) | Arranque local, scripts, URLs, endpoints visibles, variables de entorno. |
 | [ARCHITECTURE.md](../ARCHITECTURE.md) | Nuevos módulos, flujos, bounded contexts, integraciones, ADRs, diagramas, límites de seguridad. |
 | [docs/roadmap.md](roadmap.md) | Fases completadas, nuevos hitos, métricas, riesgos, checklist de corto plazo. |
+| [docs/performance-baseline.md](performance-baseline.md) | Metodología, umbrales y histórico del baseline local (`pnpm perf:baseline`). |
 | `packages/contracts/openapi/v1/public-api.yaml` | Cualquier cambio en rutas, códigos HTTP, schemas o `operationId`. |
 | `packages/contracts/src/api-route-manifest.ts` | Misma PR que OpenAPI al añadir o quitar rutas HTTP públicas. |
 | `packages/types` | Campos o tipos de DTO expuestos al storefront u otros clientes. |
