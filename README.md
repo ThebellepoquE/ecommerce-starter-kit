@@ -67,7 +67,9 @@ Detalle de responsabilidades y flujos: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## CI
 
-En cada PR/push a `main`: Format, Lint, Typecheck, Test. Ramas Neon por PR: `.github/workflows/neon_workflow.yml`.
+En cada PR/push a `main`: Format, Lint, Typecheck, Test, OpenAPI Contract (`pnpm contracts:check`). Ramas Neon por PR: `.github/workflows/neon_workflow.yml`.
+
+Antes de abrir un PR que toque la API, ejecuta `pnpm contracts:check` y actualiza `public-api.yaml` + `api-route-manifest.ts` si añades rutas.
 
 ## Si ves *Internal Server Error* en :3000
 

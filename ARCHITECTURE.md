@@ -203,7 +203,7 @@ Relaciones con `onDelete` acorde a integridad: ítems de carrito en cascada; ped
 
 | Workflow | Disparador | Propósito |
 |----------|------------|-----------|
-| `ci.yml` | PR y push a `main` | Format, Lint, Typecheck, Test (`prisma generate` con `DATABASE_URL` dummy en CI). |
+| `ci.yml` | PR y push a `main` | Format, Lint, Typecheck, Test, OpenAPI Contract (`pnpm contracts:check`; `prisma generate` con `DATABASE_URL` dummy en CI). |
 | `neon_workflow.yml` | PR a `main` | Rama Neon `pr-<número>` al abrir/actualizar; borrado al cerrar PR (expiración 14 días). |
 
 **Requisitos locales/CI:** Node 22, pnpm 11.3.0 (ver `packageManager` en raíz).
@@ -229,7 +229,7 @@ Orden recomendado (detalle en [docs/roadmap.md](docs/roadmap.md)):
 2. **Observabilidad de pagos:** métricas de conversión, fallos de PI y latencia webhook.
 3. **Modularización API:** routers por bounded context sin cambiar contratos públicos.
 4. **Observabilidad:** métricas HTTP, tracing y dashboards de SLO.
-5. **Gate OpenAPI:** fallar CI si implementación y `public-api.yaml` divergen.
+5. ~~**Gate OpenAPI:** fallar CI si implementación y `public-api.yaml` divergen.~~ Hecho: manifiesto `api-route-manifest.ts` + `pnpm contracts:check` en CI.
 
 ## Criterios de extracción a servicio dedicado
 

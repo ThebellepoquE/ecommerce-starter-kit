@@ -10,6 +10,7 @@ La documentación es parte del entregable. **Cada PR que modifique comportamient
 | [ARCHITECTURE.md](../ARCHITECTURE.md) | Nuevos módulos, flujos, bounded contexts, integraciones, ADRs, diagramas, límites de seguridad. |
 | [docs/roadmap.md](roadmap.md) | Fases completadas, nuevos hitos, métricas, riesgos, checklist de corto plazo. |
 | `packages/contracts/openapi/v1/public-api.yaml` | Cualquier cambio en rutas, códigos HTTP, schemas o `operationId`. |
+| `packages/contracts/src/api-route-manifest.ts` | Misma PR que OpenAPI al añadir o quitar rutas HTTP públicas. |
 | `packages/types` | Campos o tipos de DTO expuestos al storefront u otros clientes. |
 | `packages/contracts/src/events.ts` | Nuevos eventos o cambios de payload de dominio. |
 | `apps/api/src/bounded-contexts/*/README.md` | Alcance, ownership o reglas de un dominio concreto. |
@@ -20,7 +21,8 @@ La documentación es parte del entregable. **Cada PR que modifique comportamient
 
 ### API o negocio
 
-- [ ] OpenAPI v1 alineado con rutas y respuestas reales.
+- [ ] OpenAPI v1 alineado con rutas y respuestas reales (`pnpm contracts:check` en verde).
+- [ ] `api-route-manifest.ts` actualizado si cambian rutas públicas.
 - [ ] DTOs en `@packages/types` actualizados.
 - [ ] `README.md` — tabla de endpoints si aplica.
 - [ ] `ARCHITECTURE.md` — flujos, tablas de contextos o ADR si la decisión es estable.
