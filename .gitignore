@@ -39,6 +39,7 @@ Thumbs.db
 coverage/
 .nyc_output/
 docs/performance-baseline.results.json
+docs/load-test.results.json
 
 # Otros archivos temporales
 *.tmp

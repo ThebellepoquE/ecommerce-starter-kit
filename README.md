@@ -75,7 +75,7 @@ En cada PR/push a `main`: Format, Lint, Typecheck, Test, OpenAPI Contract (`pnpm
 
 Antes de abrir un PR que toque la API, ejecuta `pnpm contracts:check` y actualiza `public-api.yaml` + `api-route-manifest.ts` si añades rutas.
 
-**Rendimiento (local):** con la API en `:4000` y seed aplicado, `pnpm perf:baseline` mide p95 y error rate en rutas críticas. **SLO en vivo:** `pnpm slo:status` o `GET /metrics/slo`. Ver [docs/performance-baseline.md](docs/performance-baseline.md) y [docs/slo-dashboard.md](docs/slo-dashboard.md).
+**Rendimiento (local):** `pnpm perf:baseline` (smoke) · `pnpm load:test` (carga corta) · `pnpm slo:status` (tras tráfico). Ver [performance-baseline.md](docs/performance-baseline.md), [load-test.md](docs/load-test.md), [slo-dashboard.md](docs/slo-dashboard.md).
 
 ## Si ves *Internal Server Error* en :3000
 

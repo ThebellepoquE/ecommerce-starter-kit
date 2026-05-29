@@ -2,6 +2,20 @@
 
 Observabilidad ligera **en memoria** para el MVP: latencia p95, tasa de 5xx y disponibilidad estimada, alineada con [performance-baseline.md](performance-baseline.md) y Fase 1 del [roadmap](roadmap.md).
 
+## ¿Es prematuro sin clientes reales?
+
+**Para producción, sí.** Sin tráfico continuo ni usuarios, un SLO “oficial” no se puede medir ni incumplir de forma meaningful.
+
+**Para desarrollo, tiene sentido limitado:**
+
+- Ver el efecto de `pnpm perf:baseline` o `pnpm load:test` en `pnpm slo:status`.
+- Detectar regresiones obvias (p95 disparado, 5xx) mientras iteras en local.
+- Familiarizar el equipo con el shape de métricas antes de conectar Prometheus/Grafana.
+
+No sustituye APM ni error budgets en prod. Cuando haya despliegue y clientes, planear exportación persistente o sustituir este endpoint por observabilidad real.
+
+Ver también [load-test.md](load-test.md) (carga sintética vs tráfico real).
+
 ## Endpoint
 
 ```http
@@ -47,7 +61,7 @@ Variables: `SLO_BASE_URL` o `PERF_BASE_URL` (default `http://localhost:4000`).
 - **Se reinicia** al reiniciar el proceso (no hay persistencia).
 - **No sustituye** Prometheus/Grafana ni APM en producción.
 - p95 calculado sobre la ventana en memoria, no sobre 30 días.
-- Complementa `pnpm perf:baseline` (carga sintética puntual) con visibilidad en tiempo real durante desarrollo.
+- Complementa `pnpm perf:baseline` (smoke) y `pnpm load:test` (carga corta); ver [docs/load-test.md](docs/load-test.md).
 
 ## Flujo recomendado
 

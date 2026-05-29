@@ -233,6 +233,7 @@ Orden recomendado (detalle en [docs/roadmap.md](docs/roadmap.md)):
 4. ~~**Modularización API:** routers por bounded context sin cambiar contratos públicos.~~ Hecho para catalog/cart/orders/payments/system; ampliar tests por módulo si hace falta.
 5. ~~**Observabilidad:** métricas HTTP y dashboard SLO mínimo.~~ Hecho: `GET /metrics/slo`, hooks en `observability/`, `pnpm slo:status` — ver [docs/slo-dashboard.md](docs/slo-dashboard.md). Tracing/Grafana pendiente.
 6. ~~**Gate OpenAPI:** fallar CI si implementación y `public-api.yaml` divergen.~~ Hecho: manifiesto `api-route-manifest.ts` + `pnpm contracts:check` en CI.
+7. ~~**Prueba de carga corta:** `pnpm load:test` y [docs/load-test.md](docs/load-test.md) (señales sintéticas de extracción; no sustituye tráfico real).
 
 ## Criterios de extracción a servicio dedicado
 
