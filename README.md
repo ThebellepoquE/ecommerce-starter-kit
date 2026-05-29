@@ -8,6 +8,7 @@ MVP mínimo en monorepo con arquitectura modular y contratos versionados.
 |---------|-------------|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Vista del sistema, dominios, flujos, datos, CI y decisiones |
 | [docs/roadmap.md](docs/roadmap.md) | Fases, hitos y criterios de escalado |
+| [docs/performance-baseline.md](docs/performance-baseline.md) | Baseline de latencia/throughput (`pnpm perf:baseline`) |
 | [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) | **Regla:** actualizar docs en el mismo PR que el código |
 
 ## Stack
@@ -72,6 +73,8 @@ En cada PR/push a `main`: Format, Lint, Typecheck, Test, OpenAPI Contract (`pnpm
 **Deploy Production** (`.github/workflows/deploy-production.yml`): al mergear en `main` ejecuta un deploy placeholder y, si existe la variable de entorno `PROD_API_URL` en **Settings → Environments → production**, hace `GET {PROD_API_URL}/health`. Sin esa variable el healthcheck se **omite** (no falla el workflow) hasta que tengas API en producción.
 
 Antes de abrir un PR que toque la API, ejecuta `pnpm contracts:check` y actualiza `public-api.yaml` + `api-route-manifest.ts` si añades rutas.
+
+**Rendimiento (local):** con la API en `:4000` y seed aplicado, `pnpm perf:baseline` mide p95 y error rate en rutas críticas. Ver [docs/performance-baseline.md](docs/performance-baseline.md).
 
 ## Si ves *Internal Server Error* en :3000
 

@@ -10,9 +10,11 @@
     "lint": "pnpm -r --if-present lint",
     "format": "pnpm -r --if-present format",
     "test": "pnpm -r --if-present test",
-    "contracts:check": "pnpm --filter @packages/contracts run check:openapi"
+    "contracts:check": "pnpm --filter @packages/contracts run check:openapi",
+    "perf:baseline": "node scripts/perf-baseline.mjs"
   },
   "devDependencies": {
+    "autocannon": "^8.0.0",
     "typescript": "^5.9.0",
     "@types/node": "^22.0.0",
     "eslint": "^9.0.0",

@@ -226,11 +226,12 @@ Relaciones con `onDelete` acorde a integridad: ítems de carrito en cascada; ped
 
 Orden recomendado (detalle en [docs/roadmap.md](docs/roadmap.md)):
 
-1. **Worker:** cola Redis/BullMQ para procesar webhooks y side effects fuera del request HTTP.
-2. **Observabilidad de pagos:** métricas de conversión, fallos de PI y latencia webhook.
-3. ~~**Modularización API:** routers por bounded context sin cambiar contratos públicos.~~ Hecho para catalog/cart/orders/payments/system; ampliar tests por módulo si hace falta.
-4. **Observabilidad:** métricas HTTP, tracing y dashboards de SLO.
-5. ~~**Gate OpenAPI:** fallar CI si implementación y `public-api.yaml` divergen.~~ Hecho: manifiesto `api-route-manifest.ts` + `pnpm contracts:check` en CI.
+1. ~~**Baseline de rendimiento:** script `pnpm perf:baseline` y guía en [docs/performance-baseline.md](docs/performance-baseline.md).~~ Hecho (entorno local de referencia).
+2. **Worker:** cola Redis/BullMQ para procesar webhooks y side effects fuera del request HTTP.
+3. **Observabilidad de pagos:** métricas de conversión, fallos de PI y latencia webhook.
+4. ~~**Modularización API:** routers por bounded context sin cambiar contratos públicos.~~ Hecho para catalog/cart/orders/payments/system; ampliar tests por módulo si hace falta.
+5. **Observabilidad:** métricas HTTP, tracing y dashboards de SLO.
+6. ~~**Gate OpenAPI:** fallar CI si implementación y `public-api.yaml` divergen.~~ Hecho: manifiesto `api-route-manifest.ts` + `pnpm contracts:check` en CI.
 
 ## Criterios de extracción a servicio dedicado
 
