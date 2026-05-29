@@ -12,6 +12,7 @@ La documentación es parte del entregable. **Cada PR que modifique comportamient
 | [docs/performance-baseline.md](performance-baseline.md) | Metodología, umbrales y histórico del baseline local (`pnpm perf:baseline`). |
 | [docs/slo-dashboard.md](slo-dashboard.md) | Dashboard SLO en vivo (`GET /metrics/slo`, `pnpm slo:status`). |
 | [docs/load-test.md](load-test.md) | Prueba de carga corta sintética (`pnpm load:test`) y señales de extracción. |
+| [docs/stripe-test-setup.md](stripe-test-setup.md) | Stripe modo test: cuenta, claves, CLI, webhook, tarjetas, troubleshooting. |
 | `packages/contracts/openapi/v1/public-api.yaml` | Cualquier cambio en rutas, códigos HTTP, schemas o `operationId`. |
 | `packages/contracts/src/api-route-manifest.ts` | Misma PR que OpenAPI al añadir o quitar rutas HTTP públicas. |
 | `packages/types` | Campos o tipos de DTO expuestos al storefront u otros clientes. |
@@ -40,6 +41,7 @@ La documentación es parte del entregable. **Cada PR que modifique comportamient
 
 - [ ] Variables `NEXT_PUBLIC_*` documentadas en README / `.env.example`.
 - [ ] Rutas nuevas mencionadas en README y ARCHITECTURE.
+- [ ] Cambios en flujo de pago: actualizar [docs/stripe-test-setup.md](stripe-test-setup.md) si cambian pasos, variables o CLI.
 
 ### CI / infra
 
