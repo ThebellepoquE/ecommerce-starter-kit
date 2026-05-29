@@ -205,6 +205,7 @@ Relaciones con `onDelete` acorde a integridad: ítems de carrito en cascada; ped
 |----------|------------|-----------|
 | `ci.yml` | PR y push a `main` | Format, Lint, Typecheck, Test, OpenAPI Contract (`pnpm contracts:check`; `prisma generate` con `DATABASE_URL` dummy en CI). |
 | `neon_workflow.yml` | PR a `main` | Rama Neon `pr-<número>` al abrir/actualizar; borrado al cerrar PR (expiración 14 días). |
+| `deploy-production.yml` | Push a `main` | Deploy placeholder; healthcheck a `{PROD_API_URL}/health` solo si la variable está en el environment `production` (si no, se omite sin fallar). |
 
 **Requisitos locales/CI:** Node 22, pnpm 11.3.0 (ver `packageManager` en raíz).
 

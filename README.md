@@ -69,6 +69,8 @@ Implementación HTTP por módulo en `apps/api/src/{catalog,cart,orders,payments,
 
 En cada PR/push a `main`: Format, Lint, Typecheck, Test, OpenAPI Contract (`pnpm contracts:check`). Ramas Neon por PR: `.github/workflows/neon_workflow.yml`.
 
+**Deploy Production** (`.github/workflows/deploy-production.yml`): al mergear en `main` ejecuta un deploy placeholder y, si existe la variable de entorno `PROD_API_URL` en **Settings → Environments → production**, hace `GET {PROD_API_URL}/health`. Sin esa variable el healthcheck se **omite** (no falla el workflow) hasta que tengas API en producción.
+
 Antes de abrir un PR que toque la API, ejecuta `pnpm contracts:check` y actualiza `public-api.yaml` + `api-route-manifest.ts` si añades rutas.
 
 ## Si ves *Internal Server Error* en :3000

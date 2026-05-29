@@ -30,8 +30,11 @@ jobs:
           PROD_API_URL: ${{ vars.PROD_API_URL }}
         run: |
           if [ -z "$PROD_API_URL" ]; then
-            echo "PROD_API_URL is not set in production environment variables."
-            exit 1
+            echo "::warning::PROD_API_URL no está definida — se omite el healthcheck de producción."
+            echo "Cuando despliegues la API, configura la variable en GitHub:"
+            echo "  Settings → Environments → production → Environment variables → PROD_API_URL"
+            echo "  (URL base pública, sin barra final; p. ej. https://api.tudominio.com)"
+            exit 0
           fi
 
           HEALTH_URL="${PROD_API_URL%/}/health"
