@@ -14,6 +14,13 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "pnpm run typecheck",
-    "format": "prettier --check . --ignore-path ../../.gitignore"
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "check:openapi": "tsx scripts/check-openapi-drift.ts"
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-parser": "^10.1.1",
+    "@types/node": "^22.15.31",
+    "openapi-types": "^12.1.3",
+    "tsx": "^4.20.6"
   }
 }
