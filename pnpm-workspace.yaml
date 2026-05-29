@@ -2,10 +2,14 @@ packages:
   - apps/*
   - packages/*
 
-# Dependabot / advisories: postcss >=8.5.10 (CVE-2026-41305), @hono/node-server >=1.19.13 (CVE-2026-39406)
+# Dependabot / advisories:
+# - postcss >=8.5.10 (CVE-2026-41305)
+# - @hono/node-server >=1.19.13 (CVE-2026-39406)
+# - uuid >=11.1.1 (CVE-2026-41907; transitivo vía autocannon/hyperid)
 overrides:
   postcss: ^8.5.10
   "@hono/node-server": ^1.19.13
+  uuid: ^11.1.1
 allowBuilds:
   '@parcel/watcher': false
   '@prisma/engines': true
