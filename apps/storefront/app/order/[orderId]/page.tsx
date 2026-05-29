@@ -102,7 +102,9 @@ export default function OrderPage() {
         if (requestId !== preparePaymentRequestRef.current) {
           return;
         }
-        setMessage("No se pudo iniciar el pago: error de red o API no disponible");
+        setMessage(
+          "No se pudo iniciar el pago: error de red o API no disponible",
+        );
       } finally {
         if (requestId === preparePaymentRequestRef.current) {
           setIsPreparingPayment(false);
