@@ -1,5 +1,13 @@
 # Identity
 
-Contexto responsable de identidad de usuario, autenticacion y perfiles.
+Contexto reservado para usuarios, sesiones y autorización (no implementado en el MVP).
 
-Arquitectura global y reglas de documentacion: [ARCHITECTURE.md](../../../../../ARCHITECTURE.md) · [docs/DOCUMENTATION.md](../../../../../docs/DOCUMENTATION.md).
+## Ownership
+
+| Campo              | Valor         |
+| ------------------ | ------------- |
+| **Owner**          | _sin asignar_ |
+| **Rutas**          | —             |
+| **Implementación** | —             |
+
+Arquitectura global y reglas de documentacion: [ARCHITECTURE.md](../../../../../ARCHITECTURE.md) · [docs/DOCUMENTATION.md](../../../../../docs/DOCUMENTATION.md) · [OWNERS.md](../OWNERS.md).

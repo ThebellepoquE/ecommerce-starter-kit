@@ -61,9 +61,9 @@ Contrato completo: `packages/contracts/openapi/v1/public-api.yaml`.
 
 ## Dominios
 
-Bounded contexts en `apps/api/src/bounded-contexts/`: `catalog`, `cart`, `orders`, `checkout`, `payments`, `identity`.
+Bounded contexts en `apps/api/src/bounded-contexts/`: `catalog`, `cart`, `orders`, `checkout`, `payments`, `identity`. Tabla de owners y rutas: [OWNERS.md](apps/api/src/bounded-contexts/OWNERS.md).
 
-Detalle de responsabilidades y flujos: [ARCHITECTURE.md](ARCHITECTURE.md).
+Implementación HTTP por módulo en `apps/api/src/{catalog,cart,orders,payments,system}/`. Detalle: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## CI
 
