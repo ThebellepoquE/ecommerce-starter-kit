@@ -2,15 +2,15 @@
 
 Tabla de referencia para PRs y revisiones. En un equipo pequeño un mismo maintainer puede cubrir varios contextos; al crecer, asignar owners distintos por fila.
 
-| Contexto   | Owner (GitHub)   | Rutas HTTP (v1)                                        | Código de implementación                   |
-| ---------- | ---------------- | ------------------------------------------------------ | ------------------------------------------ |
-| `catalog`  | `@ThebellepoquE` | `GET /products`                                        | `apps/api/src/catalog/`                    |
-| `cart`     | `@ThebellepoquE` | `POST /cart`, `GET /cart/:cartId`, `POST/DELETE` ítems | `apps/api/src/cart/`                       |
-| `orders`   | `@ThebellepoquE` | `POST /orders`, `GET /orders/:orderId`                 | `apps/api/src/orders/`                     |
-| `checkout` | `@ThebellepoquE` | (orquestación en storefront)                           | `apps/storefront/app/cart/`, `app/order/`  |
-| `payments` | `@ThebellepoquE` | `payment-intent`, `payment/sync`, `/webhooks/stripe`   | `apps/api/src/payments/`                   |
-| `identity` | _sin asignar_    | —                                                      | `bounded-contexts/identity/` (placeholder) |
-| Infra HTTP | `@ThebellepoquE` | `GET /health`, `GET /version`                          | `apps/api/src/system/`                     |
+| Contexto   | Owner (GitHub)   | Rutas HTTP (v1)                                        | Código de implementación                              |
+| ---------- | ---------------- | ------------------------------------------------------ | ----------------------------------------------------- |
+| `catalog`  | `@ThebellepoquE` | `GET /products`                                        | `apps/api/src/catalog/`                               |
+| `cart`     | `@ThebellepoquE` | `POST /cart`, `GET /cart/:cartId`, `POST/DELETE` ítems | `apps/api/src/cart/`                                  |
+| `orders`   | `@ThebellepoquE` | `POST /orders`, `GET /orders/:orderId`                 | `apps/api/src/orders/`                                |
+| `checkout` | `@ThebellepoquE` | (orquestación en storefront)                           | `apps/storefront/app/cart/`, `app/order/`             |
+| `payments` | `@ThebellepoquE` | `payment-intent`, `payment/sync`, `/webhooks/stripe`   | `apps/api/src/payments/`                              |
+| `identity` | _sin asignar_    | —                                                      | `bounded-contexts/identity/` (placeholder)            |
+| Infra HTTP | `@ThebellepoquE` | `GET /health`, `GET /version`, `GET /metrics/slo`      | `apps/api/src/system/`, `apps/api/src/observability/` |
 
 **Reglas**
 

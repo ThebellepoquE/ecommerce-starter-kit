@@ -11,7 +11,8 @@
     "format": "pnpm -r --if-present format",
     "test": "pnpm -r --if-present test",
     "contracts:check": "pnpm --filter @packages/contracts run check:openapi",
-    "perf:baseline": "node scripts/perf-baseline.mjs"
+    "perf:baseline": "node scripts/perf-baseline.mjs",
+    "slo:status": "node scripts/slo-dashboard.mjs"
   },
   "devDependencies": {
     "autocannon": "^8.0.0",

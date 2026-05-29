@@ -104,5 +104,5 @@ Guardrails de extraccion:
 3. [x] Definir baseline de performance (latencia/throughput/error rate) para rutas criticas.
 4. [x] Añadir gate en CI para validar drift de OpenAPI vs implementacion.
 5. [x] Establecer ownership explicito por bounded context en `apps/api/src/bounded-contexts`.
-6. [ ] Crear dashboard minimo con SLO de API (latencia p95, 5xx, disponibilidad).
+6. [x] Crear dashboard minimo con SLO de API (latencia p95, 5xx, disponibilidad).
 7. [ ] Ejecutar una prueba de carga corta y documentar umbrales de extraccion a Fastify.

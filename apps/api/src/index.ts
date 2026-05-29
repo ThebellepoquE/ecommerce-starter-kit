@@ -5,6 +5,7 @@ import { registerCartRoutes } from "./cart/register-cart-routes.js";
 import { registerOrdersRoutes } from "./orders/register-orders-routes.js";
 import { prisma } from "./db.js";
 import { registerPaymentRoutes } from "./payments/register-payment-routes.js";
+import { registerHttpMetrics } from "./observability/register-http-metrics.js";
 import { registerSystemRoutes } from "./system/register-system-routes.js";
 
 const app = Fastify({ logger: true });
@@ -13,6 +14,7 @@ const HOST = process.env.API_HOST ?? "0.0.0.0";
 
 const start = async (): Promise<void> => {
   try {
+    registerHttpMetrics(app);
     await registerSystemRoutes(app);
     await registerCatalogRoutes(app);
     await registerCartRoutes(app);
