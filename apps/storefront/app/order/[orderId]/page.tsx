@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { CreatePaymentIntentResponseDto, OrderDto } from "@packages/types";
 import { CheckoutForm } from "./checkout-form";
 
@@ -23,17 +23,23 @@ export default function OrderPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPreparingPayment, setIsPreparingPayment] = useState(false);
+  const preparePaymentRequestRef = useRef(0);
 
-  const loadOrder = useCallback(async (): Promise<void> => {
+  const loadOrder = useCallback(async (): Promise<OrderDto | null> => {
     const response = await fetch(`${API_URL}/orders/${orderId}`, {
       cache: "no-store",
     });
     if (!response.ok) {
       setMessage("No se pudo cargar la orden");
-      return;
+      return null;
     }
     const data = (await response.json()) as OrderDto;
     setOrder(data);
+    if (data.status === "paid") {
+      setMessage(null);
+      setCheckout(null);
+    }
+    return data;
   }, [orderId]);
 
   useEffect(() => {
@@ -51,44 +57,66 @@ export default function OrderPage() {
       return;
     }
 
+    const requestId = ++preparePaymentRequestRef.current;
+
     const preparePayment = async (): Promise<void> => {
       setIsPreparingPayment(true);
       setMessage(null);
-      const response = await fetch(
-        `${API_URL}/orders/${orderId}/payment-intent`,
-        {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ idempotencyKey: orderId }),
-        },
-      );
-
-      if (response.status === 503) {
-        setMessage(
-          "Pagos no configurados en la API (faltan variables Stripe).",
+      try {
+        const response = await fetch(
+          `${API_URL}/orders/${orderId}/payment-intent`,
+          {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ idempotencyKey: orderId }),
+          },
         );
-        setIsPreparingPayment(false);
-        return;
-      }
 
-      if (!response.ok) {
-        const body = (await response.json()) as { message?: string };
-        setMessage(body.message ?? "No se pudo iniciar el pago");
-        setIsPreparingPayment(false);
-        return;
-      }
+        if (requestId !== preparePaymentRequestRef.current) {
+          return;
+        }
 
-      const data = (await response.json()) as CreatePaymentIntentResponseDto;
-      setCheckout(data);
-      setIsPreparingPayment(false);
+        if (response.status === 503) {
+          setMessage(
+            "Pagos no configurados en la API (faltan variables Stripe).",
+          );
+          return;
+        }
+
+        if (!response.ok) {
+          const body = (await response.json()) as {
+            message?: string;
+            code?: string;
+          };
+          if (body.code === "ORDER_ALREADY_PAID") {
+            await loadOrder();
+            return;
+          }
+          setMessage(body.message ?? "No se pudo iniciar el pago");
+          return;
+        }
+
+        const data = (await response.json()) as CreatePaymentIntentResponseDto;
+        setCheckout(data);
+      } catch {
+        if (requestId !== preparePaymentRequestRef.current) {
+          return;
+        }
+        setMessage("No se pudo iniciar el pago: error de red o API no disponible");
+      } finally {
+        if (requestId === preparePaymentRequestRef.current) {
+          setIsPreparingPayment(false);
+        }
+      }
     };
 
     void preparePayment();
-  }, [order, orderId, checkout]);
+  }, [order, orderId, checkout, loadOrder]);
 
   const handlePaid = (): void => {
+    preparePaymentRequestRef.current += 1;
+    setMessage(null);
     void loadOrder();
-    setCheckout(null);
   };
 
   return (
@@ -99,7 +127,7 @@ export default function OrderPage() {
       </header>
       <Link href="/">Volver al catalogo</Link>
       {isLoading ? <p className="meta-text">Cargando orden...</p> : null}
-      {message ? (
+      {message && order?.status !== "paid" ? (
         <p className="status-message status-message--error">{message}</p>
       ) : null}
       {order ? (

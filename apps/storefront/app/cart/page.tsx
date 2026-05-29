@@ -82,19 +82,23 @@ export default function CartPage() {
       return;
     }
 
-    const response = await fetch(
-      `${API_URL}/cart/${cartId}/items/${productId}`,
-      {
-        method: "DELETE",
-      },
-    );
-    if (!response.ok) {
-      const reason = await parseError(response);
-      setMessage(`No se pudo quitar item: ${reason}`);
-      return;
+    try {
+      const response = await fetch(
+        `${API_URL}/cart/${cartId}/items/${productId}`,
+        {
+          method: "DELETE",
+        },
+      );
+      if (!response.ok) {
+        const reason = await parseError(response);
+        setMessage(`No se pudo quitar item: ${reason}`);
+        return;
+      }
+      const data = (await response.json()) as CartDto;
+      setCart(data);
+    } catch {
+      setMessage("No se pudo quitar item: error de red o API no disponible");
     }
-    const data = (await response.json()) as CartDto;
-    setCart(data);
   };
 
   const createOrder = async (): Promise<void> => {
