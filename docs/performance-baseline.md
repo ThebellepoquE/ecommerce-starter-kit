@@ -74,6 +74,8 @@ El script escribe `docs/performance-baseline.results.json` (gitignored). Copia u
 - Comparar siempre la misma URL, duración y conexiones entre ejecuciones.
 - No ejecutar en CI contra `main` por defecto (depende de API + BD); usar en local o workflow manual futuro.
 
+Para carga más exigente: [load-test.md](load-test.md) (`pnpm load:test`).
+
 ## Histórico (ejemplo)
 
 Rellenar tras cada medición significativa (release, cambio de BD, refactor de rutas):

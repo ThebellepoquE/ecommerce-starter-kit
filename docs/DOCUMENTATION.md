@@ -11,6 +11,7 @@ La documentación es parte del entregable. **Cada PR que modifique comportamient
 | [docs/roadmap.md](roadmap.md) | Fases completadas, nuevos hitos, métricas, riesgos, checklist de corto plazo. |
 | [docs/performance-baseline.md](performance-baseline.md) | Metodología, umbrales y histórico del baseline local (`pnpm perf:baseline`). |
 | [docs/slo-dashboard.md](slo-dashboard.md) | Dashboard SLO en vivo (`GET /metrics/slo`, `pnpm slo:status`). |
+| [docs/load-test.md](load-test.md) | Prueba de carga corta sintética (`pnpm load:test`) y señales de extracción. |
 | `packages/contracts/openapi/v1/public-api.yaml` | Cualquier cambio en rutas, códigos HTTP, schemas o `operationId`. |
 | `packages/contracts/src/api-route-manifest.ts` | Misma PR que OpenAPI al añadir o quitar rutas HTTP públicas. |
 | `packages/types` | Campos o tipos de DTO expuestos al storefront u otros clientes. |
