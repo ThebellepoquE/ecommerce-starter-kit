@@ -67,18 +67,18 @@ ecommerce-starter-kit/
 
 ## Bounded contexts
 
-Los dominios están declarados en `apps/api/src/bounded-contexts/` y modelan el límite de responsabilidad. La implementación HTTP actual vive en `apps/api/src/index.ts` de forma centralizada; la extracción a módulos por contexto es el siguiente paso estructural.
+Los dominios están declarados en `apps/api/src/bounded-contexts/` y modelan el límite de responsabilidad. La implementación HTTP se registra por módulo (`catalog/`, `cart/`, `orders/`, `payments/`, `system/`); `index.ts` solo compone el servidor Fastify.
 
-| Contexto | Responsabilidad | Estado actual |
-|----------|-----------------|---------------|
-| `catalog` | Productos, precio, disponibilidad | `GET /products` + modelo `Product` |
-| `cart` | Carrito activo e ítems | `POST/GET /cart`, items CRUD |
-| `orders` | Pedidos desde carrito | `POST/GET /orders` |
-| `checkout` | Orquestación de pago y cierre | Integrado vía página de orden + Payment Element |
-| `payments` | Cobros, idempotencia, webhooks | PaymentIntent, webhook Stripe, modelo `Payment` |
+| Contexto | Responsabilidad | Código HTTP |
+|----------|-----------------|-------------|
+| `catalog` | Productos, precio, disponibilidad | `apps/api/src/catalog/` |
+| `cart` | Carrito activo e ítems | `apps/api/src/cart/` |
+| `orders` | Pedidos desde carrito | `apps/api/src/orders/` |
+| `checkout` | Orquestación de pago y cierre | Storefront (`app/cart`, `app/order`) |
+| `payments` | Cobros, idempotencia, webhooks | `apps/api/src/payments/` |
 | `identity` | Usuarios/sesiones | Placeholder |
 
-Cada carpeta de contexto incluye un `README.md` con el alcance del dominio. Cambios de frontera entre contextos requieren actualizar este documento y el OpenAPI.
+Ownership explícito: [apps/api/src/bounded-contexts/OWNERS.md](apps/api/src/bounded-contexts/OWNERS.md). Cada contexto tiene `README.md` con rutas y owner. Cambios de frontera requieren actualizar este documento, OWNERS y OpenAPI.
 
 ## Flujo de compra (MVP)
 
@@ -227,7 +227,7 @@ Orden recomendado (detalle en [docs/roadmap.md](docs/roadmap.md)):
 
 1. **Worker:** cola Redis/BullMQ para procesar webhooks y side effects fuera del request HTTP.
 2. **Observabilidad de pagos:** métricas de conversión, fallos de PI y latencia webhook.
-3. **Modularización API:** routers por bounded context sin cambiar contratos públicos.
+3. ~~**Modularización API:** routers por bounded context sin cambiar contratos públicos.~~ Hecho para catalog/cart/orders/payments/system; ampliar tests por módulo si hace falta.
 4. **Observabilidad:** métricas HTTP, tracing y dashboards de SLO.
 5. ~~**Gate OpenAPI:** fallar CI si implementación y `public-api.yaml` divergen.~~ Hecho: manifiesto `api-route-manifest.ts` + `pnpm contracts:check` en CI.
 
