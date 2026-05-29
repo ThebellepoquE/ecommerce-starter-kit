@@ -150,17 +150,27 @@ export const createPaymentIntentForOrder = async (
   const stripe = getStripeClient();
   const publishableKey = getStripePublishableKey();
 
-  if (order.payment) {
-    const existing = await stripe.paymentIntents.retrieve(
-      order.payment.stripePaymentIntentId,
-    );
-    if (existing.client_secret) {
-      return {
-        clientSecret: existing.client_secret,
-        paymentIntentId: existing.id,
-        publishableKey,
-      };
+  const toPaymentIntentResponse = async (
+    stripePaymentIntentId: string,
+  ): Promise<CreatePaymentIntentResponseDto> => {
+    const intent = await stripe.paymentIntents.retrieve(stripePaymentIntentId);
+    if (!intent.client_secret) {
+      throw new PaymentServiceError(
+        "PAYMENT_INTENT_INVALID",
+        "Payment intent has no client secret",
+        500,
+      );
     }
+
+    return {
+      clientSecret: intent.client_secret,
+      paymentIntentId: intent.id,
+      publishableKey,
+    };
+  };
+
+  if (order.payment) {
+    return toPaymentIntentResponse(order.payment.stripePaymentIntentId);
   }
 
   if (body.idempotencyKey) {
@@ -176,21 +186,7 @@ export const createPaymentIntentForOrder = async (
       );
     }
     if (existingByKey) {
-      const intent = await stripe.paymentIntents.retrieve(
-        existingByKey.stripePaymentIntentId,
-      );
-      if (!intent.client_secret) {
-        throw new PaymentServiceError(
-          "PAYMENT_INTENT_INVALID",
-          "Payment intent has no client secret",
-          500,
-        );
-      }
-      return {
-        clientSecret: intent.client_secret,
-        paymentIntentId: intent.id,
-        publishableKey,
-      };
+      return toPaymentIntentResponse(existingByKey.stripePaymentIntentId);
     }
   }
 
@@ -216,16 +212,39 @@ export const createPaymentIntentForOrder = async (
     );
   }
 
-  await prisma.payment.create({
-    data: {
-      orderId: order.id,
-      stripePaymentIntentId: intent.id,
-      status: mapStripePaymentIntentStatus(intent.status),
-      amountCents: order.totalCents,
-      currency: order.currency as Currency,
-      idempotencyKey: body.idempotencyKey ?? null,
-    },
+  const paymentAfterCreate = await prisma.payment.findUnique({
+    where: { orderId: order.id },
   });
+  if (paymentAfterCreate) {
+    return toPaymentIntentResponse(paymentAfterCreate.stripePaymentIntentId);
+  }
+
+  try {
+    await prisma.payment.create({
+      data: {
+        orderId: order.id,
+        stripePaymentIntentId: intent.id,
+        status: mapStripePaymentIntentStatus(intent.status),
+        amountCents: order.totalCents,
+        currency: order.currency as Currency,
+        idempotencyKey: body.idempotencyKey ?? null,
+      },
+    });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      "code" in error &&
+      (error as { code?: string }).code === "P2002"
+    ) {
+      const existingPayment = await prisma.payment.findUnique({
+        where: { orderId: order.id },
+      });
+      if (existingPayment) {
+        return toPaymentIntentResponse(existingPayment.stripePaymentIntentId);
+      }
+    }
+    throw error;
+  }
 
   return {
     clientSecret: intent.client_secret,

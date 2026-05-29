@@ -1,3 +1,4 @@
+import cors from "@fastify/cors";
 import Fastify from "fastify";
 import rawBody from "fastify-raw-body";
 import { registerCatalogRoutes } from "./catalog/register-catalog-routes.js";
@@ -14,6 +15,10 @@ const HOST = process.env.API_HOST ?? "0.0.0.0";
 
 const start = async (): Promise<void> => {
   try {
+    await app.register(cors, {
+      origin: process.env.CORS_ORIGIN ?? "http://localhost:3000",
+      methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+    });
     registerHttpMetrics(app);
     await registerSystemRoutes(app);
     await registerCatalogRoutes(app);
