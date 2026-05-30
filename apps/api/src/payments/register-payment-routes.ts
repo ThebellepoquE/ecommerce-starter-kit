@@ -22,32 +22,63 @@ export const registerPaymentRoutes = async (
   app.post<{
     Params: { orderId: string };
     Body: CreatePaymentIntentRequestDto;
-  }>("/orders/:orderId/payment-intent", async (request, reply) => {
-    if (!isStripeConfigured()) {
-      reply.code(503);
-      return { message: "Stripe is not configured on the API" };
-    }
-
-    try {
-      const result = await createPaymentIntentForOrder(
-        request.params.orderId,
-        request.body ?? {},
-      );
-      reply.code(201);
-      return result;
-    } catch (error) {
-      if (error instanceof PaymentServiceError) {
-        reply.code(error.statusCode);
-        return { message: error.message, code: error.code };
+  }>(
+    "/orders/:orderId/payment-intent",
+    {
+      schema: {
+        params: {
+          type: "object",
+          required: ["orderId"],
+          properties: {
+            orderId: { type: "string", minLength: 1 },
+          },
+        },
+        body: {
+          type: "object",
+          properties: {
+            idempotencyKey: { type: "string", minLength: 1 },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      if (!isStripeConfigured()) {
+        reply.code(503);
+        return { message: "Stripe is not configured on the API" };
       }
-      request.log.error(error);
-      reply.code(500);
-      return { message: "Failed to create payment intent" };
-    }
-  });
+
+      try {
+        const result = await createPaymentIntentForOrder(
+          request.params.orderId,
+          request.body ?? {},
+        );
+        reply.code(201);
+        return result;
+      } catch (error) {
+        if (error instanceof PaymentServiceError) {
+          reply.code(error.statusCode);
+          return { message: error.message, code: error.code };
+        }
+        request.log.error(error);
+        reply.code(500);
+        return { message: "Failed to create payment intent" };
+      }
+    },
+  );
 
   app.post<{ Params: { orderId: string } }>(
     "/orders/:orderId/payment/sync",
+    {
+      schema: {
+        params: {
+          type: "object",
+          required: ["orderId"],
+          properties: {
+            orderId: { type: "string", minLength: 1 },
+          },
+        },
+      },
+    },
     async (request, reply) => {
       if (!isStripeConfigured()) {
         reply.code(503);

@@ -45,3 +45,4 @@ docs/load-test.results.json
 *.tmp
 *.temp
 .cache/
+.atl/
