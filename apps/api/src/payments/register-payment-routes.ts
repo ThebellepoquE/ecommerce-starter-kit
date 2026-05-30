@@ -42,28 +42,29 @@ export const registerPaymentRoutes = async (
       },
     },
     async (request, reply) => {
-    if (!isStripeConfigured()) {
-      reply.code(503);
-      return { message: "Stripe is not configured on the API" };
-    }
-
-    try {
-      const result = await createPaymentIntentForOrder(
-        request.params.orderId,
-        request.body ?? {},
-      );
-      reply.code(201);
-      return result;
-    } catch (error) {
-      if (error instanceof PaymentServiceError) {
-        reply.code(error.statusCode);
-        return { message: error.message, code: error.code };
+      if (!isStripeConfigured()) {
+        reply.code(503);
+        return { message: "Stripe is not configured on the API" };
       }
-      request.log.error(error);
-      reply.code(500);
-      return { message: "Failed to create payment intent" };
-    }
-  });
+
+      try {
+        const result = await createPaymentIntentForOrder(
+          request.params.orderId,
+          request.body ?? {},
+        );
+        reply.code(201);
+        return result;
+      } catch (error) {
+        if (error instanceof PaymentServiceError) {
+          reply.code(error.statusCode);
+          return { message: error.message, code: error.code };
+        }
+        request.log.error(error);
+        reply.code(500);
+        return { message: "Failed to create payment intent" };
+      }
+    },
+  );
 
   app.post<{ Params: { orderId: string } }>(
     "/orders/:orderId/payment/sync",
