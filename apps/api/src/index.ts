@@ -1,5 +1,7 @@
 import cors from "@fastify/cors";
-import Fastify from "fastify";
+import helmet from "@fastify/helmet";
+import rateLimit from "@fastify/rate-limit";
+import Fastify, { type FastifyError } from "fastify";
 import rawBody from "fastify-raw-body";
 import { registerCatalogRoutes } from "./catalog/register-catalog-routes.js";
 import { registerCartRoutes } from "./cart/register-cart-routes.js";
@@ -19,6 +21,14 @@ const start = async (): Promise<void> => {
       origin: process.env.CORS_ORIGIN ?? "http://localhost:3000",
       methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
     });
+    await app.register(helmet, {
+      contentSecurityPolicy: false,
+      crossOriginEmbedderPolicy: false,
+    });
+    await app.register(rateLimit, {
+      max: 100,
+      timeWindow: "1 minute",
+    });
     registerHttpMetrics(app);
     await registerSystemRoutes(app);
     await registerCatalogRoutes(app);
@@ -32,6 +42,29 @@ const start = async (): Promise<void> => {
       runFirst: true,
     });
     await registerPaymentRoutes(app);
+
+    app.setErrorHandler((error: FastifyError, request, reply) => {
+      if (error.validation) {
+        reply.code(400).send({
+          message: "Validation error",
+          details: error.validation,
+        });
+        return;
+      }
+
+      if (error.statusCode && error.statusCode < 500) {
+        reply.code(error.statusCode).send({
+          message: error.message,
+        });
+        return;
+      }
+
+      request.log.error(error);
+      reply.code(500).send({
+        message: "Internal server error",
+      });
+    });
+
     await app.listen({ port: PORT, host: HOST });
   } catch (error) {
     app.log.error(error);

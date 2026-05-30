@@ -38,14 +38,28 @@ export const registerCartRoutes = async (
 
   app.post<{ Params: { cartId: string }; Body: AddCartItemRequestDto }>(
     "/cart/:cartId/items",
+    {
+      schema: {
+        params: {
+          type: "object",
+          required: ["cartId"],
+          properties: {
+            cartId: { type: "string", minLength: 1 },
+          },
+        },
+        body: {
+          type: "object",
+          required: ["productId", "quantity"],
+          properties: {
+            productId: { type: "string", minLength: 1 },
+            quantity: { type: "integer", minimum: 1 },
+          },
+        },
+      },
+    },
     async (request, reply) => {
       const { cartId } = request.params;
       const { productId, quantity } = request.body;
-
-      if (!Number.isInteger(quantity) || quantity <= 0) {
-        reply.code(400);
-        return { message: "Quantity must be a positive integer" };
-      }
 
       const cart = await prisma.cart.findUnique({ where: { id: cartId } });
       if (!cart) {

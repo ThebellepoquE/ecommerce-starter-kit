@@ -22,7 +22,26 @@ export const registerPaymentRoutes = async (
   app.post<{
     Params: { orderId: string };
     Body: CreatePaymentIntentRequestDto;
-  }>("/orders/:orderId/payment-intent", async (request, reply) => {
+  }>(
+    "/orders/:orderId/payment-intent",
+    {
+      schema: {
+        params: {
+          type: "object",
+          required: ["orderId"],
+          properties: {
+            orderId: { type: "string", minLength: 1 },
+          },
+        },
+        body: {
+          type: "object",
+          properties: {
+            idempotencyKey: { type: "string", minLength: 1 },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
     if (!isStripeConfigured()) {
       reply.code(503);
       return { message: "Stripe is not configured on the API" };
@@ -48,6 +67,17 @@ export const registerPaymentRoutes = async (
 
   app.post<{ Params: { orderId: string } }>(
     "/orders/:orderId/payment/sync",
+    {
+      schema: {
+        params: {
+          type: "object",
+          required: ["orderId"],
+          properties: {
+            orderId: { type: "string", minLength: 1 },
+          },
+        },
+      },
+    },
     async (request, reply) => {
       if (!isStripeConfigured()) {
         reply.code(503);

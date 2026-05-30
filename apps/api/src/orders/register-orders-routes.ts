@@ -10,6 +10,17 @@ export const registerOrdersRoutes = async (
 ): Promise<void> => {
   app.post<{ Body: CreateOrderRequestDto }>(
     "/orders",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["cartId"],
+          properties: {
+            cartId: { type: "string", minLength: 1 },
+          },
+        },
+      },
+    },
     async (request, reply) => {
       const { cartId } = request.body;
       const cart = await getCartById(cartId);
