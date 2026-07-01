@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "engram": {
+      "command": "/home/linuxbrew/.linuxbrew/bin/engram",
+      "args": ["mcp", "--tools=agent", "--project=ecommerce-starter-kit"],
+      "env": {
+        "ENGRAM_PROJECT": "ecommerce-starter-kit",
+        "PATH": "/home/thebellepoque/.local/share/pnpm:/home/thebellepoque/.local/bin:/home/thebellepoque/go/bin:/home/linuxbrew/.linuxbrew/bin:/home/thebellepoque/.nvm/versions/node/current/bin:/usr/bin:/usr/local/bin:/bin"
+      }
+    }
+  }
+}

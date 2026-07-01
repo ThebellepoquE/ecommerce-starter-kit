@@ -24,6 +24,12 @@ pnpm-debug.log*
 *.sqlite
 *.sqlite3
 
+# Cursor (MCP local); las reglas .cursor/rules/ y mcp.json sí se versionan
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+!.cursor/mcp.json
+
 # Configuraciones de IDE
 .vscode/
 .idea/
