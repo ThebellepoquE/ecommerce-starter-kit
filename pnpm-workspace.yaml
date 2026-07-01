@@ -11,6 +11,7 @@ packages:
 # - esbuild >=0.28.1 (GHSA; dev server file read on Windows)
 # - hono >=4.12.25 (GHSA; CORS, serve-static, Lambda adapters)
 # - form-data >=4.0.6 (GHSA; CRLF injection in multipart)
+# - js-yaml >=4.2.0 (GHSA; quadratic DoS in merge key aliases)
 overrides:
   postcss: ^8.5.10
   "@hono/node-server": ^1.19.13
@@ -20,6 +21,7 @@ overrides:
   esbuild: ^0.28.1
   hono: ^4.12.25
   form-data: ^4.0.6
+  js-yaml: ^4.2.0
 allowBuilds:
   '@parcel/watcher': false
   '@prisma/engines': true
