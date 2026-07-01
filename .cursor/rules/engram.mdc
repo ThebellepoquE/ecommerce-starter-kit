@@ -1,0 +1,30 @@
+---
+description: Memoria persistente Engram — proyecto ecommerce-starter-kit
+alwaysApply: true
+---
+
+# Engram — `ecommerce-starter-kit`
+
+## Proyecto canónico
+
+- **Nombre en Engram:** `ecommerce-starter-kit` (ver `.engram/config.json` y `.cursor/mcp.json`).
+- **No pases** `project` en herramientas `mem_*` si el MCP arrancó con `--project=ecommerce-starter-kit`.
+- **Config:** `.engram/config.json` + `.cursor/mcp.json` en la raíz del repo.
+
+## Inicio de sesión (proactivo, sin pedir permiso)
+
+1. `mem_context`
+2. `mem_search` con query corta si hace falta contexto del tema.
+
+## Durante el trabajo
+
+Tras decisiones, bugs o cambios de tooling: `mem_save` con `scope: "project"` y `type` adecuado.
+
+## Cierre de sesión
+
+`mem_session_summary` con Goal / Accomplished / Next Steps / Relevant Files.
+
+## Si falla
+
+- `ambiguous_project`: recargar Cursor; comprobar `.cursor/mcp.json` del repo y toggle en Settings → Tools & MCP.
+- En Linux GUI: `command` debe ser ruta absoluta a `engram` (este script ya la fija).
