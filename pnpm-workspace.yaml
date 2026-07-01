@@ -6,10 +6,20 @@ packages:
 # - postcss >=8.5.10 (CVE-2026-41305)
 # - @hono/node-server >=1.19.13 (CVE-2026-39406)
 # - uuid >=11.1.1 (CVE-2026-41907; transitivo vía autocannon/hyperid)
+# - vitest >=3.2.6 (GHSA; UI server arbitrary file read/execute)
+# - vite >=7.3.5 (GHSA; fs.deny bypass + launch-editor UNC on Windows)
+# - esbuild >=0.28.1 (GHSA; dev server file read on Windows)
+# - hono >=4.12.25 (GHSA; CORS, serve-static, Lambda adapters)
+# - form-data >=4.0.6 (GHSA; CRLF injection in multipart)
 overrides:
   postcss: ^8.5.10
   "@hono/node-server": ^1.19.13
   uuid: ^11.1.1
+  vitest: ^3.2.6
+  vite: ^7.3.5
+  esbuild: ^0.28.1
+  hono: ^4.12.25
+  form-data: ^4.0.6
 allowBuilds:
   '@parcel/watcher': false
   '@prisma/engines': true
